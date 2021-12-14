@@ -2,6 +2,11 @@
 
 # Assumption
 
-It's a stage 3 of JetBrains Academy project. The grader is ready for check the game result, and prints it for a user. Also pseudo random number generator was implemented. /
+After stage 4 of JetBrains Academy project. \
+\
+In this stage, program:\
 
-It generates secret code of the given length with unique numbers.
+    Asks for the length of the secret code and then generate the code (using method based on nanoTime()).
+    Waits for the user input.\
+    Grades the guessing attempt in bulls and cows.\
+    If the secret code has been guessed, the program stops; otherwise, returns to the second step.

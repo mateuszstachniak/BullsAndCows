@@ -4,51 +4,63 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         StringBuilder secretDigits = new StringBuilder();
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please, enter the secret code's length:");
         int n = scanner.nextInt();
 
         if (n > 10) {
-            errorMessage();
+            errorMessage(n);
         } else {
             pseudoRandomNumberGenerator(n, secretDigits);
-            System.out.println(secretDigits);
+            cowsBulls(secretDigits);
         }
-
-
-        /*        String userDigitsInput = scanner.nextLine();*/
-        /*        cowsBulls(secretDigits, userDigitsInput);*/
     }
 
-/*    public static void cowsBulls(String secret, String userDigits) {
-        int cows = 0;
-        int bulls = 0;
-        for (int i = 0; i < secret.length(); i++) {
-            if (userDigits.charAt(i) == secret.charAt(i)) {
-                bulls++;
+    public static void cowsBulls(StringBuilder secretDigits) {
+        Scanner scanner = new Scanner(System.in);
+        int tryCounter = 0;
+        boolean weHaveAWinner = false;
+        do {
+            tryCounter++;
+            System.out.println("Turn " + tryCounter + ":");
+            String userNumbers = scanner.nextLine();
 
-            } else {
-                for (int j = 0; j < secret.length(); j++) {
-                    if (userDigits.charAt(i) == secret.charAt(j)) {
-                        cows++;
+            int cows = 0;
+            int bulls = 0;
+            for (int i = 0; i < secretDigits.length(); i++) {
+                if (userNumbers.charAt(i) == secretDigits.charAt(i)) {
+                    bulls++;
+
+                } else {
+                    for (int j = 0; j < secretDigits.length(); j++) {
+                        if (userNumbers.charAt(i) == secretDigits.charAt(j)) {
+                            cows++;
+                        }
                     }
                 }
             }
-        }
 
-        if (cows > 0 || bulls > 0) {
-            System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s). The secret code is " + secret + ".");
-        } else if (cows > 0 && bulls == 0) {
-            System.out.println("Grade: " + cows + " cow(s). The secret code is " + secret + ".");
-        } else if (cows == 0 && bulls > 0) {
-            System.out.println("Grade: " + bulls + " bull(s). The secret code is " + secret + ".");
-        } else {
-            System.out.println("Grade: None. The secret code is " + secret + ".");
-        }
-    }*/
+            if (bulls == secretDigits.length()) {
+                System.out.println("Grade: " + bulls + " bull(s).");
+                System.out.println("Congratulations! You guessed the secret code.");
+                weHaveAWinner = true;
+            } else if (cows > 0 || bulls > 0) {
+                System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s).");
+            } else if (cows > 0 && bulls == 0) {
+                System.out.println("Grade: " + cows + " cow(s).");
+            } else if (cows == 0 && bulls > 0) {
+                System.out.println("Grade: " + bulls + " bull(s).");
+            } else {
+                System.out.println("Grade: None.");
+            }
 
-    public static void errorMessage() {
-        System.out.println("Error");
+        } while (!weHaveAWinner);
+    }
+
+    public static void errorMessage(int n) {
+        System.out.println("Error: can't generate a secret number with a length of " + n + " because there aren't enough unique digits.");
     }
 
     public static StringBuilder pseudoRandomNumberGenerator(int n, StringBuilder secretDigits) {
@@ -81,7 +93,7 @@ public class Main {
             }
 
         } while (repeat);
+        System.out.println("Okay, let's start a game! ");
         return secretDigits;
     }
-
 }
