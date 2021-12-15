@@ -8,21 +8,45 @@ public class Main {
         StringBuilder secretPassword = new StringBuilder();
         String symbols = "0123456789abcdefghijklmnopqrstuvwxyz";
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Input the length of the secret code:");
-        int n = scanner.nextInt();
-        System.out.println("Input the number of possible symbols in the code:");
-        int m = scanner.nextInt();
-        String symbolsRange = symbols.substring(0, m);
+        int n = 0;
+        int m = 0;
 
-        if (n > 36) {
-            errorMessage(n);
+        System.out.println("Input the length of the secret code:");
+        String nString = scanner.nextLine();
+        try {
+            n = Integer.parseInt(nString);
+            if (n <= 0 || n > 36) {
+                errorMessageN();
+                System.exit(0);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error: \"" + nString + "\" isn't a valid number.");
+            System.exit(0);
+        }
+
+        System.out.println("Input the number of possible symbols in the code:");
+        String mString = scanner.nextLine();
+        try {
+            m = Integer.parseInt(mString);
+            if (m <= 0 || m > 36) {
+                errorMessageM();
+                System.exit(0);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error: \"" + mString + "\" isn't a valid number.");
+            System.exit(0);
+        }
+
+        if (n > m) {
+            System.out.println("Error: it's not possible to generate a code with a length of " + n + " with " + 5 +  " unique symbols.");
         } else {
-            pseudoRandomNumberGenerator(n, m, secretPassword, symbolsRange);
-            cowsBulls(secretPassword);
+            String symbolsRange = symbols.substring(0, m);
+            pseudoRandomGenerator(n, m, secretPassword, symbolsRange);
+            grader(secretPassword);
         }
     }
 
-    public static void cowsBulls(StringBuilder secretPassword) {
+    public static void grader(StringBuilder secretPassword) {
         Scanner scanner = new Scanner(System.in);
         int tryCounter = 0;
         boolean weHaveAWinner = false;
@@ -52,9 +76,9 @@ public class Main {
                 weHaveAWinner = true;
             } else if (cows > 0 || bulls > 0) {
                 System.out.println("Grade: " + bulls + " bull(s) and " + cows + " cow(s).");
-            } else if (cows > 0 && bulls == 0) {
+            } else if (bulls == 0) {
                 System.out.println("Grade: " + cows + " cow(s).");
-            } else if (cows == 0 && bulls > 0) {
+            } else if (cows == 0) {
                 System.out.println("Grade: " + bulls + " bull(s).");
             } else {
                 System.out.println("Grade: None.");
@@ -63,8 +87,12 @@ public class Main {
         } while (!weHaveAWinner);
     }
 
-    public static void errorMessage(int n) {
-        System.out.println("Error: can't generate a secret number with a length of " + n + " because there aren't enough unique digits and letters.");
+    public static void errorMessageN() {
+        System.out.println("Error: number of possible length of the the code is 1-36.");
+    }
+
+    public static void errorMessageM() {
+        System.out.println("Error: number of possible symbols in the code is 36 (0-9, a-z).");
     }
 
     public static StringBuilder secretCharsString(int n) {
@@ -88,7 +116,7 @@ public class Main {
         System.out.println("Okay, let's start a game!");
     }
 
-    public static StringBuilder pseudoRandomNumberGenerator(int n, int m, StringBuilder secretPassword, String symbolsRange) {
+    public static StringBuilder pseudoRandomGenerator(int n, int m, StringBuilder secretPassword, String symbolsRange) {
         boolean repeat = true;
         do {
             Random random = new Random();
