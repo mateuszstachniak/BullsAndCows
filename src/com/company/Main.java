@@ -1,24 +1,28 @@
 package com.company;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        StringBuilder secretDigits = new StringBuilder();
-
+        StringBuilder secretPassword = new StringBuilder();
+        String symbols = "0123456789abcdefghijklmnopqrstuvwxyz";
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please, enter the secret code's length:");
+        System.out.println("Input the length of the secret code:");
         int n = scanner.nextInt();
+        System.out.println("Input the number of possible symbols in the code:");
+        int m = scanner.nextInt();
+        String symbolsRange = symbols.substring(0, m);
 
-        if (n > 10) {
+        if (n > 36) {
             errorMessage(n);
         } else {
-            pseudoRandomNumberGenerator(n, secretDigits);
-            cowsBulls(secretDigits);
+            pseudoRandomNumberGenerator(n, m, secretPassword, symbolsRange);
+            cowsBulls(secretPassword);
         }
     }
 
-    public static void cowsBulls(StringBuilder secretDigits) {
+    public static void cowsBulls(StringBuilder secretPassword) {
         Scanner scanner = new Scanner(System.in);
         int tryCounter = 0;
         boolean weHaveAWinner = false;
@@ -29,20 +33,20 @@ public class Main {
 
             int cows = 0;
             int bulls = 0;
-            for (int i = 0; i < secretDigits.length(); i++) {
-                if (userNumbers.charAt(i) == secretDigits.charAt(i)) {
+            for (int i = 0; i < secretPassword.length(); i++) {
+                if (userNumbers.charAt(i) == secretPassword.charAt(i)) {
                     bulls++;
 
                 } else {
-                    for (int j = 0; j < secretDigits.length(); j++) {
-                        if (userNumbers.charAt(i) == secretDigits.charAt(j)) {
+                    for (int j = 0; j < secretPassword.length(); j++) {
+                        if (userNumbers.charAt(i) == secretPassword.charAt(j)) {
                             cows++;
                         }
                     }
                 }
             }
 
-            if (bulls == secretDigits.length()) {
+            if (bulls == secretPassword.length()) {
                 System.out.println("Grade: " + bulls + " bull(s).");
                 System.out.println("Congratulations! You guessed the secret code.");
                 weHaveAWinner = true;
@@ -60,40 +64,57 @@ public class Main {
     }
 
     public static void errorMessage(int n) {
-        System.out.println("Error: can't generate a secret number with a length of " + n + " because there aren't enough unique digits.");
+        System.out.println("Error: can't generate a secret number with a length of " + n + " because there aren't enough unique digits and letters.");
     }
 
-    public static StringBuilder pseudoRandomNumberGenerator(int n, StringBuilder secretDigits) {
+    public static StringBuilder secretCharsString(int n) {
+        StringBuilder secretChars = new StringBuilder();
+
+        for (int i = 0; i < n; i++) {
+            secretChars.append("*");
+        }
+        return secretChars;
+    }
+
+    public static void startGameMessage(int n, int m, String symbolsRange) {
+        if (m <= 10) {
+            System.out.println("The secret is prepared: " + secretCharsString(n) + " (0-" + symbolsRange.charAt(m - 1) + ").");
+        } else if (m == 11) {
+            System.out.println("The secret is prepared: " + secretCharsString(n) + " (0-9, a).");
+        } else {
+            System.out.println("The secret is prepared: " + secretCharsString(n) + " (0-9, a-" + symbolsRange.charAt(m - 1) + ").");
+        }
+
+        System.out.println("Okay, let's start a game!");
+    }
+
+    public static StringBuilder pseudoRandomNumberGenerator(int n, int m, StringBuilder secretPassword, String symbolsRange) {
         boolean repeat = true;
         do {
-            String pseudoRandomNumber = Long.toString(System.nanoTime()).substring(0, 11);
+            Random random = new Random();
 
             for (int i = 1; i <= n; i++) {
-                secretDigits.append(pseudoRandomNumber.charAt(pseudoRandomNumber.length() - i));
+                secretPassword.append(symbolsRange.charAt(random.nextInt(m)));
             }
 
-            for (int i = 0; i < secretDigits.length(); i++) {
-                for (int j = 0; j < secretDigits.length(); j++) {
-                    if (secretDigits.charAt(0) != '0' && i == j && n == 1) {
+            for (int i = 0; i < secretPassword.length(); i++) {
+                for (int j = 0; j < secretPassword.length(); j++) {
+                    if (i == j && n == 1) {
                         repeat = false;
                     } else if (i == j) {
 
-                    } else if (secretDigits.charAt(0) == '0') {
+                    } else if (secretPassword.charAt(i) == secretPassword.charAt(j)) {
                         repeat = true;
-                        secretDigits.setLength(0);
-                        break;
-                    } else if (secretDigits.charAt(i) == secretDigits.charAt(j)) {
-                        repeat = true;
-                        secretDigits.setLength(0);
+                        secretPassword.setLength(0);
                         break;
                     } else {
                         repeat = false;
                     }
                 }
             }
-
         } while (repeat);
-        System.out.println("Okay, let's start a game! ");
-        return secretDigits;
+
+        startGameMessage(n, m, symbolsRange);
+        return secretPassword;
     }
 }
