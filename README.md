@@ -6,11 +6,6 @@ After stage 6 of JetBrains Academy project. \
 \
 In this stage, program:
 
-    Asks for the length of the secret code and then generate the code (using method based on Random()).
-    Waits for the user input.\
-    Grades the guessing attempt in bulls and cows.\
-    If the secret code has been guessed, the program stops; otherwise, returns to the second step.
-
 Asks for the length of the secret code.
 Asks for the range of possible characters in the secret code (36 possible).
 Generates a secret code using numbers and characters. Program also prints the secret code using * characters and print which characters were used to generate the secret code.
